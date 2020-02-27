@@ -8,13 +8,13 @@ jobs:
   include:
   - stage: Build
     arch: s390x
-    script: "./ci/build-and-push-latest.sh"
+    script: "./ci/build-and-push-latest-with-arch.sh"
     env: DOCKER_FILE=Dockerfile-s390x
   - arch: amd64
-    script: "./ci/build-and-push-latest.sh"
+    script: "./ci/build-and-push-latest-with-arch.sh"
     env: DOCKER_FILE=Dockerfile-x86
   - arch: ppc64le
-    script: "./ci/build-and-push-latest.sh"
+    script: "./ci/build-and-push-latest-with-arch.sh"
     env: DOCKER_FILE=Dockerfile-ppc64le
   - stage: Manifest
     arch: amd64
