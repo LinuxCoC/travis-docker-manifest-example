@@ -6,7 +6,7 @@ dist: xenial
 jobs:
   include:
   - stage: Build
-    os: linux-s390x
+    os: linux-s390
     env: DOCKER_FILE=Dockerfile-s390x DOCKER_IMAGE=manifest-example-s390x
     script: "./ci/build-and-push-latest.sh"
   - os: linux
