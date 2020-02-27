@@ -3,7 +3,7 @@
 <p align="center">
   <img width="40%" height="40%" src="images/docker-travis-wide.png"><br>
   Written By : <a href="https://github.com/bendermIBM">@Max Bender</a><br>
-  <a href="https://travis.ibm.com/Lets-Talk/docker-travis-manifest"><img src="https://travis.ibm.com/Lets-Talk/docker-travis-manifest.svg?token=JXc6pEaq6GzQHxPLG6xU&branch=master"></a>
+  <a href="https://travis.ibm.com/Lets-Talk/docker-travis-manifest"><img src="https://api.travis-ci.com/LinuxCoC/travis-docker-manifest-example.svg?branch=master"></a>
 </p>
 
 This is an example to work off of for building [Docker Manifests](https://docs.docker.com/engine/reference/commandline/manifest/) based off a Docker image. By building a manifest it provides Docker the ability to support multi-arch containers. 
