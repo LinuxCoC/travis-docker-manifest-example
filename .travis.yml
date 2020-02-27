@@ -3,19 +3,21 @@ sudo: required
 services:
 - docker
 dist: xenial
+os: linux
 jobs:
   include:
   - stage: Build
-    os: linux-s390
+    arch: s390x
+    script: "./ci/build-and-push-latest.sh"
     env: DOCKER_FILE=Dockerfile-s390x DOCKER_IMAGE=manifest-example-s390x
+  - arch: amd64
     script: "./ci/build-and-push-latest.sh"
-  - os: linux
     env: DOCKER_FILE=Dockerfile-x86 DOCKER_IMAGE=manifest-example-amd64
+  - arch: ppc64le
     script: "./ci/build-and-push-latest.sh"
-  - os: linux-ppc64le
     env: DOCKER_FILE=Dockerfile-ppc64le DOCKER_IMAGE=manifest-example-ppc64le
-    script: "./ci/build-and-push-latest.sh"
   - stage: Manifest
+    arch: amd64
     script:
     - sudo bash ci/enable-experimental.sh
     - sudo bash ci/manifest-create-and-push.sh
@@ -29,4 +31,4 @@ notifications:
     secure: hdEtqhIvjdjwvB1zejb+4WvIpaNmE3GtkGlZah9Xiq1gN/mp18PW0FY0ctXDuAxZVYF4YALlltOwR8dkjNsmoL0l3xI9EKwBtSSQBWqe/SZS1/3w7DDnf6SoABr9bWOJK+ObBy1yDFmgsxNWN9V6qAZmqNEuJcoHlNm/wj+uk1yfhO6RjHlD7HfmHEO52rTVlQqcPlXW5laXd1G6GGwwCvrtqY6pAJj1LxkCnhwPL/Ikm+UcdBoaoJcpB/b6fesw38V0uZB1JqE1NQm6Elv6M/AAknawqbSekBTcff1U7iuG7cRK4V6NSLl65s108eRtST61Veuvk25yr/YUVAyU3FyxBiJ3Ref0UaeEl6P0ERa/FeewjH0H7Rnj3FrMMO1lL6lDodU5Eyv7UhhfAXiXp1aDIqEbNBdmxtYDFEtBF12/S+o+wmyJ1nQMkHFp66kwz+jeDUKSoTeP6ouTMfxl/OPdTK/QGrSG/wwO7lVs3L4rGK/SZukpImELn5Is/0745yvOXIkuIaxXggYpB+j39AGvACrNHx5W1T897SuqcFG/NCmcxY6xPdPUfetJsdiLyJnOuoy7UGfODY7UDR7xnkTfCNuA/Z4+wCTszFGGYwuljF9q+tkIncT0zfmJxBkK/K6+eeAvroMyHup3Xr3WZ70heSf01Cs2KPDtTnPWoj4=
     template:
     - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository_slug}@%{branch}
-      by %{author} %{result} in %{duration}. ```sys-ltic-docker-local.artifactory.swg-devops.com/%{docker_image}:%{build_id}```
+      by %{author} %{result} in %{duration}. ```%{docker_image}:%{build_id}```
