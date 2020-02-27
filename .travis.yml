@@ -1,5 +1,5 @@
-language: bash
-sudo: required
+language: minimal
+root: yes
 services:
 - docker
 dist: xenial
