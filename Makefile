@@ -4,6 +4,7 @@ DOCKER := $(shell which docker)
 # Jot is for OSX, and shuf is for Linux
 RANDOM_PORT ?= $(shell jot -r 1  2000 65000 || shuf -i 2000-65000 -n 1)
 
+ARCH = $(TRAVIS_CPU_ARCH)
 DOCKER_REGISTRY ?= 
 DOCKER_NAMESPACE ?= 
 
@@ -27,7 +28,8 @@ DOCKER_TAG ?= $(DOCKER_BUILD_TAG)
 # Complete URI to docker image
 DOCKER_URI ?= $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(DOCKER_TAG)
 DOCKER_URI_LATEST ?= $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):latest
-DOCKER_ARCH_URI ?= $(DOCKER_REGISTRY)-$(DOCKER_IMAGE_ARCH):$(DOCKER_TAG)
+DOCKER_ARCH_URI_LATEST ?= $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(ARCH)-latest
+DOCKER_ARCH_URI ?= $(DOCKER_REGISTRY):$(ARCH)-$(DOCKER_TAG)
 
 # Path to build (where the Dockerfile is located)
 DOCKER_BUILD_PATH ?= .
@@ -95,6 +97,12 @@ docker\:push-and-latest:
 	@until $(DOCKER) push "$(DOCKER_URI)"; do sleep 1; done
 	@until $(DOCKER) push "$(DOCKER_URI_LATEST)"; do sleep 1; done
 
+## Push architecture scoped image to Docker Hub
+docker\:push-and-latest-with-arch:
+	@echo "INFO: Pushing $(DOCKER_ARCH_URI)"
+	@echo "INFO: Pushing $(DOCKER_ARCH_URI_LATEST)"
+	@until $(DOCKER) push "$(DOCKER_ARCH_URI)"; do sleep 1; done
+	@until $(DOCKER) push "$(DOCKER_ARCH_URI_LATEST)"; do sleep 1; done
 
 ## Push the architecture-specific image to a Docker registry
 docker\:push-arch:
@@ -120,7 +128,6 @@ else
 	@$(DOCKER) tag "$(DOCKER_IMAGE):$(DOCKER_BUILD_TAG)" "$(DOCKER_URI)"
 endif
 
-## Tag the last built image with an architecture-specific`DOCKER_TAG`
 docker\:tag-and-latest:
 	@echo INFO: Tagging $(DOCKER_IMAGE):$(DOCKER_BUILD_TAG) as $(DOCKER_URI)
 	@echo INFO: Tagging $(DOCKER_IMAGE):$(DOCKER_BUILD_TAG) as $(DOCKER_URI_LATEST)
@@ -130,6 +137,18 @@ ifeq ($(findstring 1.9.1,$(DOCKER_SERVER_VERSION)),1.9.1)
 else
 	@$(DOCKER) tag "$(DOCKER_IMAGE):$(DOCKER_BUILD_TAG)" "$(DOCKER_URI)"
 	@$(DOCKER) tag "$(DOCKER_IMAGE):$(DOCKER_BUILD_TAG)" "$(DOCKER_URI_LATEST)"
+endif
+
+## Tag the last built image with an architecture-specific`DOCKER_TAG`
+docker\:tag-and-latest-with-arch:
+	@echo INFO: Tagging $(DOCKER_IMAGE):$(DOCKER_BUILD_TAG) as $(DOCKER_ARCH_URI)
+	@echo INFO: Tagging $(DOCKER_IMAGE):$(DOCKER_BUILD_TAG) as $(DOCKER_ARCH_URI_LATEST)
+ifeq ($(findstring 1.9.1,$(DOCKER_SERVER_VERSION)),1.9.1)
+	@$(DOCKER) tag -f "$(DOCKER_IMAGE):$(DOCKER_BUILD_TAG)" "$(DOCKER_ARCH_URI)"
+	@$(DOCKER) tag -f "$(DOCKER_IMAGE):$(DOCKER_BUILD_TAG)" "$(DOCKER_ARCH_URI_LATEST)"
+else
+	@$(DOCKER) tag "$(DOCKER_IMAGE):$(DOCKER_BUILD_TAG)" "$(DOCKER_ARCH_URI)"
+	@$(DOCKER) tag "$(DOCKER_IMAGE):$(DOCKER_BUILD_TAG)" "$(DOCKER_ARCH_URI_LATEST)"
 endif
 
 ## Remove existing docker images
