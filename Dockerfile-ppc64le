@@ -1,0 +1,7 @@
+FROM ppc64le/ubuntu:16.04
+
+COPY a-script.sh /a-script.sh
+
+RUN chmod +x /a-script.sh
+
+ENTRYPOINT ["/a-script.sh"]
