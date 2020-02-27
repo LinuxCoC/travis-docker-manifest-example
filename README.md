@@ -46,3 +46,13 @@ env:
 ###### VIA Web-UI
 
 Setting it via the Web-UI will still encrypt the values that you want to keep secret so functionally it's the same. See the [description here](https://docs.travis-ci.com/user/web-ui/#environment-variables) for info about setting the environment-variables via the UI.
+
+### Travis Build Explained
+
+1. On `amd64`/`s390x`/`ppc64le` let's build our Docker image based off of the file located at `DOCKER_FILE`.
+
+  We will be running the same [build-and-push-latest-with-arch.sh](ci/build-and-push-latest-with-arch.sh) script on each arch which will take our `DOCKER_IMAGE` variable and add an unique tag that corresponds to the arch (`<arch>-<unique_tag>`). Then it will update the latest tag scoped to arch (`<arch>-latest`)
+
+  Finally it will push the two tagged images to `DOCKER_REGISTRY`
+
+2. Pull each of the previously built images, [enable experimental](ci/enable-experimental.sh) to take advantage of `docker manifest` command, and then build & push to `DOCKER_REGISTRY`
