@@ -56,4 +56,4 @@ Setting it via the Web-UI will still encrypt the values that you want to keep se
 
     Finally it will push the two tagged images to `DOCKER_REGISTRY`
 
-2. Pull each of the previously built images, [enable experimental](ci/enable-experimental.sh) to take advantage of `docker manifest` command, and then build & push to `DOCKER_REGISTRY`
+2. Pull each of the previously built images, [enable experimental](ci/enable-experimental.sh) to take advantage of `docker manifest` command, and then build & push to `DOCKER_REGISTRY` via the [manifest-create-and-push.sh](ci/manifest-create-and-push.sh) script.
